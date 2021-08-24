@@ -10,10 +10,10 @@ local:
 local-down:
 	docker-compose -f docker-compose-local.yaml down
 
-run:
+run: ecr-login 
 	docker-compose up --build --force-recreate --remove-orphans -d
 
-redeploy: ecr-login clean run
+redeploy: clean run
 
 ecr-login:
 	aws ecr get-login-password \
