@@ -110,12 +110,12 @@ class TrakBackAgent {
     async addDidToChain(account, didDocument, did_uri) {
 
         var binaryArray = str2ab(JSON.stringify(didDocument))
-        var p = Array.from(new Uint8Array(binaryArray))
+        var didDocument = Array.from(new Uint8Array(binaryArray))
 
         const palletRpc = "didModule";
         const callable = "insertDidDocument";
 
-        const inputParams = [p, did_uri];
+        const inputParams = [didDocument, did_uri];
         const paramFields = [true, true];
 
         const transformed = this.transformParams(paramFields, inputParams);
@@ -123,6 +123,26 @@ class TrakBackAgent {
         return await this.save(account, palletRpc, callable, transformed);
 
     }
+
+
+    async addVCPhashToChain(account, vc, publicKey) {
+
+        var vcp = Array.from(new Uint8Array(str2ab(blake2AsHex.blake2AsHex(JSON.stringify(vc)))))
+        console.log(vcp)
+        var publicKey =  Array.from(new Uint8Array(str2ab(publicKey)))
+
+        const palletRpc = "didModule";
+        let callable = "createVcFingerprint";
+
+        let inputParams = [publicKey, vcp, true];
+        let paramFields = [true, true, true];
+
+        const transformed = this.transformParams(paramFields, inputParams);
+    
+        return await this.save(account, palletRpc, callable, transformed);
+
+    }
+
 
     async save(account, palletRpc, callable, transformed) {
 

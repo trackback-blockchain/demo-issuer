@@ -53,6 +53,16 @@ app.post('/api/v1/register', async (req, res) => {
         didUri: didLicence.did_uri
     })
 
+    //partialVCS
+    // await TrackBackAgent.addVCPhashToChain(alice, driverLicence.partialVCS[0], alice.address)
+    // driverLicence.partialVCS.map(async (key)=> {
+    //     await TrackBackAgent.addVCPhashToChain(alice, key, alice.address)
+    // })
+
+    for (const key of driverLicence.partialVCS) {
+        await TrackBackAgent.addVCPhashToChain(alice, key, alice.address)
+    }
+
     res.status(200).json({
 
         vc:
