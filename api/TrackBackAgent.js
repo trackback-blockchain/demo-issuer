@@ -3,7 +3,6 @@ const blake2AsHex = require('@polkadot/util-crypto');
 const { Keyring } = require('@polkadot/keyring');
 const str2ab = require('string-to-arraybuffer');
 const { v4: uuidv4 } = require('uuid');
-const { ServerlessApplicationRepository } = require('aws-sdk');
 
 const utils = {
     paramConversion: {
@@ -22,8 +21,7 @@ const isNumType = type => utils.paramConversion.num.some(el => type.indexOf(el) 
 class TrakBackAgent {
 
     async connect() {
-        // const provider = new WsProvider("wss://trackback.dev");
-        const provider = new WsProvider("ws://127.0.0.1:9944");
+        const provider = new WsProvider("wss://trackback.dev");
 
         const types = {
             "VerifiableCredential": {
@@ -140,12 +138,11 @@ class TrakBackAgent {
         let paramFields = [true, true, true];
 
         const transformed = this.transformParams(paramFields, inputParams);
-        
-        await sleep(1000);
-
+    
         return await this.save(account, palletRpc, callable, transformed);
 
     }
+
 
     async save(account, palletRpc, callable, transformed) {
 
