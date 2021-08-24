@@ -1,0 +1,34 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@polkadot/api": "^5.5.1",
+    "@polkadot/extension-dapp": "^0.39.3",
+    "@polkadot/keyring": "^7.2.1",
+    "@polkadot/networks": "^7.2.1",
+    "@polkadot/types": "^5.5.1",
+    "@polkadot/ui-keyring": "^0.85.1",
+    "@polkadot/ui-settings": "^0.85.1",
+    "@polkadot/util": "^7.2.1",
+    "@polkadot/util-crypto": "^7.2.1",
+    "aws-sdk": "^2.974.0",
+    "body-parser": "^1.19.0",
+    "busboy": "^0.3.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jose": "^3.14.3",
+    "moment": "^2.29.1",
+    "nodemon": "^2.0.12",
+    "query-string": "^7.0.1",
+    "string-to-arraybuffer": "^1.0.2",
+    "uuid": "^8.3.2"
+  }
+}
