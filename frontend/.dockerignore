@@ -1,0 +1,9 @@
+.*
+*Dockerfile*
+*docker-compose*
+makefile
+*.yml
+READ*
+node_modules
+test/**
+build

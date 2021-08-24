@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  api:
+    build: api
+    container_name: api
+    environment: 
+      PORT: 80
+
+  frontend:
+    build: frontend
+    container_name: frontend
+    environment: 
+      PORT: 80
+      
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    depends_on:
+      - frontend
+      - api
+

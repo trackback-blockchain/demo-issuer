@@ -72,7 +72,7 @@ class VerifiableCredentialUtil {
   }
 
 
-  async createDrivingLicenseVCS({ firstNames, surname, dateOfBirth, licence, version, entitilements = [], dateOfExpiry, didUri }) {
+  async createDrivingLicenseVCS({ firstNames, surname, dateOfBirth, licence, version, entitilements = [], dateOfExpiry, didUri, imageUri, bloodType }) {
 
     const shareableVC = {
       licence,
@@ -82,6 +82,8 @@ class VerifiableCredentialUtil {
       version,
       dateOfExpiry,
       entitilements,
+      imageUri,
+      bloodType
     }
 
     const baseClaim = {
