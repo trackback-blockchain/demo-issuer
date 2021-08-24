@@ -3,6 +3,7 @@ const blake2AsHex = require('@polkadot/util-crypto');
 const { Keyring } = require('@polkadot/keyring');
 const str2ab = require('string-to-arraybuffer');
 const { v4: uuidv4 } = require('uuid');
+const { ServerlessApplicationRepository } = require('aws-sdk');
 
 const utils = {
     paramConversion: {
@@ -21,7 +22,8 @@ const isNumType = type => utils.paramConversion.num.some(el => type.indexOf(el) 
 class TrakBackAgent {
 
     async connect() {
-        const provider = new WsProvider("wss://trackback.dev");
+        // const provider = new WsProvider("wss://trackback.dev");
+        const provider = new WsProvider("ws://127.0.0.1:9944");
 
         const types = {
             "VerifiableCredential": {
@@ -110,15 +112,36 @@ class TrakBackAgent {
     async addDidToChain(account, didDocument, did_uri) {
 
         var binaryArray = str2ab(JSON.stringify(didDocument))
-        var p = Array.from(new Uint8Array(binaryArray))
+        var didDocument = Array.from(new Uint8Array(binaryArray))
 
         const palletRpc = "didModule";
         const callable = "insertDidDocument";
 
-        const inputParams = [p, did_uri];
+        const inputParams = [didDocument, did_uri];
         const paramFields = [true, true];
 
         const transformed = this.transformParams(paramFields, inputParams);
+
+        return await this.save(account, palletRpc, callable, transformed);
+
+    }
+
+
+    async addVCPhashToChain(account, vc, publicKey) {
+
+        var vcp = Array.from(new Uint8Array(str2ab(blake2AsHex.blake2AsHex(JSON.stringify(vc)))))
+        console.log(vcp)
+        var publicKey =  Array.from(new Uint8Array(str2ab(publicKey)))
+
+        const palletRpc = "didModule";
+        let callable = "createVcFingerprint";
+
+        let inputParams = [publicKey, vcp, true];
+        let paramFields = [true, true, true];
+
+        const transformed = this.transformParams(paramFields, inputParams);
+        
+        await sleep(1000);
 
         return await this.save(account, palletRpc, callable, transformed);
 
