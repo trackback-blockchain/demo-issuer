@@ -10,6 +10,8 @@ import {
 } from 'semantic-ui-react'
 import QRCode from "react-qr-code";
 import { useReducer, useState } from 'react';
+import SemanticDatepicker from 'react-semantic-ui-datepickers';
+import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
 
 
 const MODE_FORM = "FORM";
@@ -142,8 +144,9 @@ const FormPassport = ({ save }: Props) => {
         <input placeholder='Last Name' {...bindLastName} />
       </Form.Field>
       <Form.Field>
-        <label>Date of Birth (dd-mm-yyyy)</label>
-        <input placeholder='Date of birth' {...bindDob} />
+        <label>Date of Birth (yyyy-mm-dd)</label>
+        <SemanticDatepicker onChange={(e, d) => bindDob.onChange.bind(d)} />
+        {/* <input placeholder='Date of birth' {...bindDob} /> */}
       </Form.Field>
       <Form.Field>
         <label>Photo</label>
@@ -194,6 +197,7 @@ function App() {
       lastName,
       dob,
       photo: file.data.key,
+      imageHash: file.hash,
       bloodType: randomBloodType()
     })
       .then(res => res.json())
@@ -221,7 +225,7 @@ function App() {
     }}>
       <Menu fixed='top' inverted>
         <Container>
-          <Menu.Item as='a' header>
+          <Menu.Item as='a' header active={false}>
 
             Trackback Transport Athority
           </Menu.Item>
@@ -240,7 +244,7 @@ function App() {
 
       </Container>
 
-      <Segment inverted vertical style={{ margin: '5em 0em 0em', padding: '5em 0em', position: 'relative', bottom: 0 }} >
+      <Segment inverted color="black" vertical style={{ margin: '5em 0em 0em', padding: '5em 0em', position: 'relative', bottom: 0 }} >
         <Container textAlign='center'>
 
           <Divider inverted section />

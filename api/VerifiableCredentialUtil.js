@@ -72,7 +72,19 @@ class VerifiableCredentialUtil {
   }
 
 
-  async createDrivingLicenseVCS({ firstNames, surname, dateOfBirth, licence, version, entitilements = [], dateOfExpiry, didUri, imageUri, bloodType }) {
+  async createDrivingLicenseVCS({
+    firstNames,
+    surname,
+    dateOfBirth,
+    licence,
+    version,
+    entitilements = [],
+    dateOfExpiry,
+    didUri,
+    imageUri,
+    imageHash,
+    bloodType
+  }) {
 
     const shareableVC = {
       licence,
@@ -83,11 +95,11 @@ class VerifiableCredentialUtil {
       dateOfExpiry,
       entitilements,
       imageUri,
-      bloodType
+      bloodType,
+      imageHash
     }
 
     const baseClaim = {
-      "id": didUri,
     }
 
     const baseCredential = {
@@ -100,7 +112,7 @@ class VerifiableCredentialUtil {
         "VerifiableCredential",
         "DigitalDriverLicenceCredential"
       ],
-      "issuer": `did:trackback.dev:nzdia-${generateUnique()}`
+      "issuer": didUri
     }
 
     const privateKey = createPrivateKey({
