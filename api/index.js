@@ -66,7 +66,7 @@ app.post('/api/v1/register', async (req, res) => {
     const vc = {
         id: UUID(),
         type: "DigitalDriverLicenceCredentialTrackback",
-        name: "New Zealand Driver Licence",
+        name: "Trackback Licence",
         department: "Trackback Transport Athority",
         vcs: driverLicence,
         didUri: didLicence.did_uri
