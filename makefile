@@ -1,7 +1,7 @@
 export REGION						:= ap-southeast-2
 export ECR_REPO_URL					:= 533545012068.dkr.ecr.ap-southeast-2.amazonaws.com
 export BRANCH_NAME					:=$(shell git branch --show-current)
-export IP_WEB_DIA					:=$(shell cd terraform/ap-southeast-2 && terraform output -json | jq .info.value.aws_ins_ip )
+export IP_WEB					:=$(shell cd terraform/ap-southeast-2 && terraform output -json | jq .info.value.aws_ins_ip )
 
 
 local:
