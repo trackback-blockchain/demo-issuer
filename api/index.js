@@ -30,7 +30,7 @@ app.get('/api/status', function (req, res) {
 
 app.post('/api/v1/register', async (req, res) => {
 
-    const { name: firstName, lastName, dob, photo } = req.body || {};
+    const { firstName, lastName, dob, photo, bloodType } = req.body || {};
 
     await TrackBackAgent.connect();
 
@@ -42,6 +42,8 @@ app.post('/api/v1/register', async (req, res) => {
 
     await TrackBackAgent.addDidToChain(alice, didLicence.didDocument, didLicence.did_uri)
 
+    const imageUri = "https://issuer-ta.trackback.dev/api/v1/images?image=" + Buffer.from(photo).toString('base64')
+
     const driverLicence = await VerifiableCredentialUtil.createDrivingLicenseVCS({
         firstNames: firstName,
         surname: lastName,
@@ -49,19 +51,15 @@ app.post('/api/v1/register', async (req, res) => {
         licence: generateUnique().toUpperCase(),
         version: "234",
         dateOfExpiry: "2028-01-01",
-        entitilements: `Class 1 `,
-        didUri: didLicence.did_uri
+        entitilements: `Class 1`,
+        didUri: didLicence.did_uri,
+        imageUri,
+        bloodType
     })
 
-    //partialVCS
-    // await TrackBackAgent.addVCPhashToChain(alice, driverLicence.partialVCS[0], alice.address)
-    // driverLicence.partialVCS.map(async (key)=> {
+    // for (const key of driverLicence.partialVCS) {
     //     await TrackBackAgent.addVCPhashToChain(alice, key, alice.address)
-    // })
-
-    for (const key of driverLicence.partialVCS) {
-        await TrackBackAgent.addVCPhashToChain(alice, key, alice.address)
-    }
+    // }
 
     res.status(200).json({
 
@@ -80,7 +78,29 @@ app.post('/api/v1/register', async (req, res) => {
 
 app.get('/api/v1/images', (req, res) => {
 
-    res.sendStatus(200);
+    if (!req.query.image) {
+        return res.sendStatus(400);
+    }
+
+    const image = Buffer.from(req.query.image, 'base64').toString('ascii')
+
+    var getParams = {
+        Bucket: BUCKET_NAME, // your bucket name,
+        Key: image
+    }
+
+    S3.getObject(getParams, function (err, data) {
+        // Handle any error and exit
+        if (err) {
+            return res.sendStatus(400);
+        }
+
+
+        res.writeHead(200, { 'Content-Type': 'image/jpeg' });
+        res.write(data.Body, 'binary');
+        res.end(null, 'binary');
+    });
+
 });
 
 
@@ -145,7 +165,7 @@ console.log('Trackback Transport Athority AGENT SERVER STARTING');
 
 process.on('uncaughtException', function (exception) {
     console.log(exception);
-    process.exit(1);
+    // process.exit(1);
 });
 
 process.on('SIGTERM', () => {

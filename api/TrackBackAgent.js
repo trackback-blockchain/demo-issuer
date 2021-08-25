@@ -125,9 +125,9 @@ class TrakBackAgent {
     }
 
 
-    async addVCPhashToChain(account, vc, publicKey) {
+    async addVCPhashToChain(account, vcHash, publicKey) {
 
-        var vcp = Array.from(new Uint8Array(str2ab(blake2AsHex.blake2AsHex(JSON.stringify(vc)))))
+        var vcp = Array.from(new Uint8Array(str2ab(blake2AsHex.blake2AsHex(JSON.stringify(vcHash)))))
         console.log(vcp)
         var publicKey =  Array.from(new Uint8Array(str2ab(publicKey)))
 

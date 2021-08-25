@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  api:
+    image: 533545012068.dkr.ecr.ap-southeast-2.amazonaws.com/demo-issuer-api:latest
+    container_name: api
+    environment: 
+      PORT: 80
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: demo-issuer
+        awslogs-region: ap-southeast-2
+        awslogs-stream: demo-issuer-ta
+
+  frontend:
+    image: 533545012068.dkr.ecr.ap-southeast-2.amazonaws.com/demo-issuer-frontend:latest
+    container_name: frontend
+    environment: 
+      PORT: 80
+
+  nginx:
+    image: 533545012068.dkr.ecr.ap-southeast-2.amazonaws.com/demo-issuer-nginx:latest
+    ports:
+      - 80:80
+    depends_on:
+      - frontend
+      - api
+

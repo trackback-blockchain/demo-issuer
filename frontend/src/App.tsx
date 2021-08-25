@@ -21,7 +21,7 @@ const initialState = {
 
 }
 
-const API_URL = process.env.REACT_APP_API || "https://trackback-issuer.trackback.dev"
+const API_URL = process.env.REACT_APP_API || "https://issuer-ta.trackback.dev"
 
 type AppState = typeof initialState;
 
