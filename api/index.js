@@ -30,7 +30,7 @@ app.get('/api/status', function (req, res) {
 
 app.post('/api/v1/register', async (req, res) => {
 
-    const { name: firstName, lastName, dob, photo, bloodType } = req.body || {};
+    const { firstName, lastName, dob, photo, bloodType } = req.body || {};
 
     await TrackBackAgent.connect();
 
@@ -57,9 +57,9 @@ app.post('/api/v1/register', async (req, res) => {
         bloodType
     })
 
-    for (const key of driverLicence.partialVCS) {
-        await TrackBackAgent.addVCPhashToChain(alice, key, alice.address)
-    }
+    // for (const key of driverLicence.partialVCS) {
+    //     await TrackBackAgent.addVCPhashToChain(alice, key, alice.address)
+    // }
 
     res.status(200).json({
 
@@ -78,11 +78,11 @@ app.post('/api/v1/register', async (req, res) => {
 
 app.get('/api/v1/images', (req, res) => {
 
-    if (!req.image) {
+    if (!req.query.image) {
         return res.sendStatus(400);
     }
 
-    const image = Buffer.from(req.image, 'base64').toString('ascii')
+    const image = Buffer.from(req.query.image, 'base64').toString('ascii')
 
     var getParams = {
         Bucket: BUCKET_NAME, // your bucket name,
@@ -91,10 +91,10 @@ app.get('/api/v1/images', (req, res) => {
 
     S3.getObject(getParams, function (err, data) {
         // Handle any error and exit
-        if (err){
+        if (err) {
             return res.sendStatus(400);
         }
-            
+
 
         res.writeHead(200, { 'Content-Type': 'image/jpeg' });
         res.write(data.Body, 'binary');

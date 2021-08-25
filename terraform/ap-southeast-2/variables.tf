@@ -25,7 +25,7 @@ variable "git_token" {
 
 variable "cloud_watch_name" {
   type    = string
-  default = "demo-issuser"
+  default = "demo-issuer"
 }
 
 variable "target_group_arn" {
