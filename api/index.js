@@ -92,7 +92,7 @@ app.post('/api/v1/vc', (req, res) => {
         return vc.id === id;
     }) || {}
 
-    return res.json(vc)
+    return res.json({ vc })
 
 });
 
