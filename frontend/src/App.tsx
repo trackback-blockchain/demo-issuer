@@ -198,8 +198,11 @@ function App() {
     })
       .then(res => res.json())
       .then(res => {
-        console.log(res.vc)
-        dispatch({ type: "vc", payload: res.vc })
+        console.log(res)
+
+        const payload = JSON.stringify(res);
+
+        dispatch({ type: "vc", payload: payload })
         dispatch({ type: "mode", payload: MODE_VC })
       }).catch((e) => {
         dispatch({ type: "mode", payload: MODE_FORM })
