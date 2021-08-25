@@ -14,7 +14,9 @@ const Busboy = require('busboy');
 const S3 = new AWS.S3();
 
 const PORT = process.env.PORT || 8080;
-const BUCKET_NAME = 'trackback-demo-vc-issuer'
+const BUCKET_NAME = 'trackback-demo-vc-issuer';
+
+const VC_DATABASE = [];
 
 const app = express();
 app.use(bodyParser.json());
@@ -61,20 +63,38 @@ app.post('/api/v1/register', async (req, res) => {
     //     await TrackBackAgent.addVCPhashToChain(alice, key, alice.address)
     // }
 
-    res.status(200).json({
+    const vc = {
+        id: UUID(),
+        type: "DigitalDriverLicenceCredentialTrackback",
+        name: "Trackback Licence",
+        department: "Trackback Transport Athority",
+        vcs: driverLicence,
+        didUri: didLicence.did_uri
+    };
 
-        vc:
-        {
-            type: "DigitalDriverLicenceCredential",
-            name: "New Zealand Driver Licence",
-            department: "Trackback Transport Athority",
-            vcs: driverLicence,
-            didUri: didLicence.did_uri
-        }
+    VC_DATABASE.push(vc);
 
-    })
+    const vcUrl = "https://issuer-ta.trackback.dev/api/v1/vc?vc=" + Buffer.from(vc.id).toString('base64')
+
+    return res.json({ vc: vcUrl });
 });
 
+
+app.post('/api/v1/vc', (req, res) => {
+    if (!req.query.vc) {
+        return res.sendStatus(400);
+    }
+
+    console.log('Requesting vc:', req.query.vc);
+    const id = Buffer.from(req.query.vc, 'base64').toString('ascii')
+
+    const vc = VC_DATABASE.find((vc) => {
+        return vc.id === id;
+    }) || {}
+
+    return res.json({ vc })
+
+});
 
 app.get('/api/v1/images', (req, res) => {
 
