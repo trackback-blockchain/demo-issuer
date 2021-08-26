@@ -203,7 +203,7 @@ function App() {
       firstName,
       lastName,
       dob,
-      photo: file.data.key,
+      imageUri: file.imageUri,
       imageHash: file.hash,
       bloodType: randomBloodType()
     })
