@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser');
 const cors = require('cors')
 const { Keyring } = require('@polkadot/keyring');
+const { imageHash } = require('image-hash');
 
 const AWS = require('aws-sdk')
 
@@ -32,7 +33,7 @@ app.get('/api/status', function (req, res) {
 
 app.post('/api/v1/register', async (req, res) => {
 
-    const { firstName, lastName, dob, photo, bloodType } = req.body || {};
+    const { firstName, lastName, dob, imageUri, bloodType, imageHash } = req.body || {};
 
     await TrackBackAgent.connect();
 
@@ -44,7 +45,6 @@ app.post('/api/v1/register', async (req, res) => {
 
     await TrackBackAgent.addDidToChain(alice, didLicence.didDocument, didLicence.did_uri)
 
-    const imageUri = "https://issuer-ta.trackback.dev/api/v1/images?image=" + Buffer.from(photo).toString('base64')
 
     const driverLicence = await VerifiableCredentialUtil.createDrivingLicenseVCS({
         firstNames: firstName,
@@ -56,7 +56,8 @@ app.post('/api/v1/register', async (req, res) => {
         entitilements: `Class 1`,
         didUri: didLicence.did_uri,
         imageUri,
-        bloodType
+        bloodType,
+        imageHash
     })
 
     // for (const key of driverLicence.partialVCS) {
@@ -141,21 +142,34 @@ app.post('/api/v1/image-upload', (req, res) => {
             console.log('File [' + filename + '] Finished');
         });
     });
+
     busboy.on('finish', function () {
         const userId = UUID();
+        const Body = Buffer.concat(chunks);
+
         const params = {
             Bucket: BUCKET_NAME, // your s3 bucket name
             Key: `images/${userId}-${fname}`,
-            Body: Buffer.concat(chunks), // concatinating all chunks
+            Body: Body, // concatinating all chunks
             ContentEncoding: fEncoding, // optional
             ContentType: ftype // required
         }
         // we are sending buffer data to s3.
-        S3.upload(params, (err, s3res) => {
+        S3.upload(params, async (err, s3res) => {
+
+            const imageUri = "https://issuer-ta.trackback.dev/api/v1/images?image=" + Buffer.from(s3res.key).toString('base64');
+
+            const hash = await new Promise((resolve, reject) => {
+                imageHash(imageUri, 16, true, (error, data) => {
+                    if (error) throw error;
+                    resolve(data);
+                });
+            })
+
             if (err) {
                 res.send({ err, status: 'error' });
             } else {
-                res.send({ data: s3res, status: 'success', msg: 'Image successfully uploaded.' });
+                res.send({ data: s3res, hash, imageUri, msg: 'Image successfully uploaded.' });
             }
         });
 
@@ -171,7 +185,7 @@ app.post('/api/v1/image-upload', (req, res) => {
     //         "Key": "/images/bda90060-d780-4e5a-a644-e36bcff4b03b-me1.jpg",
     //         "Bucket": "trackback-demo-vc-issuer"
     //     },
-    //     "status": "success",
+    //     "hash": "hash",
     //     "msg": "Image successfully uploaded."
     // }
 })
