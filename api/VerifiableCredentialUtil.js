@@ -110,7 +110,7 @@ class VerifiableCredentialUtil {
       id: `did:trackback.dev:nzlicence-${generateUnique()}`,
       "type": [
         "VerifiableCredential",
-        "DigitalDriverLicenceCredential"
+        "DigitalDriverLicenceCredentialTrackback"
       ],
       "issuer": didUri
     }
