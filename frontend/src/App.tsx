@@ -12,6 +12,7 @@ import QRCode from "react-qr-code";
 import { useReducer, useState } from 'react';
 import SemanticDatepicker from 'react-semantic-ui-datepickers';
 import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
+import moment from 'moment';
 
 
 const MODE_FORM = "FORM";
@@ -145,8 +146,14 @@ const FormPassport = ({ save }: Props) => {
       </Form.Field>
       <Form.Field>
         <label>Date of Birth (yyyy-mm-dd)</label>
-        <SemanticDatepicker onChange={(e, d) => bindDob.onChange.bind(d)} />
-        {/* <input placeholder='Date of birth' {...bindDob} /> */}
+        <SemanticDatepicker format='YYYY-MM-DD' onChange={(e, d) => {
+          if (!d || !d.value) return;
+          // @ts-ignore
+          const date = moment(d.value).format("YYYY-MM-DD")
+       
+          bindDob.onChange({ target: { value: date } })
+        }
+        } />
       </Form.Field>
       <Form.Field>
         <label>Photo</label>
