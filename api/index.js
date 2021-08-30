@@ -39,11 +39,11 @@ app.post('/api/v1/register', async (req, res) => {
 
     // Create a keyring instance
     const keyring = new Keyring({ type: 'sr25519' });
-    const alice = keyring.addFromUri('//Alice');
+    const bob = keyring.addFromUri('//Bob');
 
     const didLicence = TrackBackAgent.createDID();
 
-    await TrackBackAgent.addDidToChain(alice, didLicence.didDocument, didLicence.did_uri)
+    await TrackBackAgent.addDidToChain(bob, didLicence.didDocument, didLicence.did_uri)
 
 
     const driverLicence = await VerifiableCredentialUtil.createDrivingLicenseVCS({
@@ -61,7 +61,7 @@ app.post('/api/v1/register', async (req, res) => {
     })
 
     // for (const key of driverLicence.partialVCS) {
-    //     await TrackBackAgent.addVCPhashToChain(alice, key, alice.address)
+    //     await TrackBackAgent.addVCPhashToChain(bob, key, bob.address)
     // }
 
     const vc = {
