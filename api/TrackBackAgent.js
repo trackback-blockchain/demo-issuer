@@ -3,6 +3,7 @@ const blake2AsHex = require('@polkadot/util-crypto');
 const { Keyring } = require('@polkadot/keyring');
 const str2ab = require('string-to-arraybuffer');
 const { v4: uuidv4 } = require('uuid');
+const BN = require('bn.js');
 
 const utils = {
     paramConversion: {
@@ -146,13 +147,16 @@ class TrakBackAgent {
 
     async save(account, palletRpc, callable, transformed) {
 
+        const nonce = await this.api.rpc.system.accountNextIndex(account.address);
+
         const txExecute = this.api.tx[palletRpc][callable](...transformed);
 
         return await new Promise((resolve, reject) => {
 
-            txExecute.signAndSend(account, (result) => {
+            txExecute.signAndSend(account, {nonce}, (result) => {
 
                 console.log(`Current status is ${result.status}`);
+                console.log((`Current nonce is ${nonce}`))
 
                 if (result.status.isInBlock) {
                     console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
