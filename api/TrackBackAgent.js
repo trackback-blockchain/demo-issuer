@@ -3,7 +3,6 @@ const blake2AsHex = require('@polkadot/util-crypto');
 const { Keyring } = require('@polkadot/keyring');
 const str2ab = require('string-to-arraybuffer');
 const { v4: uuidv4 } = require('uuid');
-const BN = require('bn.js');
 
 const utils = {
     paramConversion: {
