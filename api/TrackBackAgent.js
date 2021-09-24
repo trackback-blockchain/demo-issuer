@@ -61,6 +61,12 @@ class TrakBackAgent {
 
     }
 
+    async disconnect(){
+        if(this.api){
+            this.api.disconnect();
+        }
+    }    
+
     transformParams(paramFields, inputParams, opts = { emptyAsNull: true }) {
         const paramVal = inputParams.map(inputParam => {
             if (typeof inputParam === 'object' && inputParam !== null && typeof inputParam.value === 'string') {
@@ -145,6 +151,10 @@ class TrakBackAgent {
 
 
     async save(account, palletRpc, callable, transformed) {
+
+        if(!this.api.isConnected) {
+            this.connect();
+        }
 
         const txExecute = this.api.tx[palletRpc][callable](...transformed);
 
