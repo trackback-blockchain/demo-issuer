@@ -57,7 +57,7 @@ export ECR_REPO_URL
 make ecr build deploy
 ```
 
-Redeploy command if you want to redeploy services
+Redeploy command if you want to redeploy services without infrasturcture
 
 ```bash
 make remotedeploy
