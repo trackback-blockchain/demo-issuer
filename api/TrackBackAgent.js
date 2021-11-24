@@ -155,14 +155,16 @@ class TrakBackAgent {
         if(!this.api.isConnected) {
             this.connect();
         }
+        const nonce = await this.api.rpc.system.accountNextIndex(account.address);
 
         const txExecute = this.api.tx[palletRpc][callable](...transformed);
 
-        return await new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
 
-            txExecute.signAndSend(account, (result) => {
+            txExecute.signAndSend(account, {nonce}, (result) => {
 
                 console.log(`Current status is ${result.status}`);
+                console.log((`Current nonce is ${nonce}`))
 
                 if (result.status.isInBlock) {
                     console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
