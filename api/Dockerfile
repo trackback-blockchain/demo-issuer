@@ -8,8 +8,9 @@ WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 
 RUN yarn install
+RUN yarn global add pm2
 
 COPY . .
 
-CMD ["node", "index.js"]
+CMD ["pm2-runtime", "index.js"]
 EXPOSE 80

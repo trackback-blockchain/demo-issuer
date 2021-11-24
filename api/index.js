@@ -64,6 +64,11 @@ app.post('/api/v1/register', async (req, res) => {
     //     await TrackBackAgent.addVCPhashToChain(bob, key, bob.address)
     // }
 
+    await TrackBackAgent.disconnect().catch((error) => {
+        console.log(error);
+    });
+
+
     const vc = {
         id: UUID(),
         type: "DigitalDriverLicenceCredentialTrackback",
